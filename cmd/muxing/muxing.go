@@ -37,6 +37,14 @@ func handleData(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleHeaders(w http.ResponseWriter, r *http.Request) {
+	a := r.Header.Get("a")
+	b := r.Header.Get("b")
+	int_a, _ := strconv.Atoi(a)
+	int_b, _ := strconv.Atoi(b)
+	w.Header().Add("a+b", strconv.Itoa(int_a+int_b))
+}
+
 /**
 Please note Start functions is a placeholder for you to start your own solution.
 Feel free to drop gorilla.mux if you want and use any other solution available.
@@ -50,6 +58,7 @@ func Start(host string, port int) {
 	router.HandleFunc("/name/{PARAM}", handleName).Methods(http.MethodGet)
 	router.HandleFunc("/bad", handleBad).Methods(http.MethodGet)
 	router.HandleFunc("/data", handleData).Methods(http.MethodPost)
+	router.HandleFunc("/headers", handleHeaders).Methods(http.MethodPost)
 
 	log.Println(fmt.Printf("Starting API server on %s:%d\n", host, port))
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%d", host, port), router); err != nil {
@@ -60,7 +69,6 @@ func Start(host string, port int) {
 //main /** starts program, gets HOST:PORT param and calls Start func.
 func main() {
 	host := os.Getenv("HOST")
-	//host := "127.0.0.1"
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
 		port = 8081
